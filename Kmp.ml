@@ -12,27 +12,33 @@ let print_result result =
         | Interrupted x -> print_string "Error at line ";print_int x ; print_newline ()
 
 (* Brute force Implementation -- NOT KMP *)
-let rec search pattern pattern_len text text_len j k =
-        if j = pattern_len then
+let rec search pattern lpattern text ltext j k =
+        if j = lpattern then
                 Found (k - j)
-        else if k = text_len then
+        else if k = ltext then
                 Interrupted j
         else if pattern.[j] = text.[k] then
-                search pattern pattern_len text text_len (j + 1) (k + 1)
+                search pattern lpattern text ltext (j + 1) (k + 1)
+        else if j = 0 then
+                search pattern lpattern text ltext 0 (k+1)
         else
-                search pattern pattern_len text text_len 0 (k - j + 1)
+                let l = assertInterrupted (search pattern lpattern pattern j 0 1) in
+                assert (l<j);
+                search pattern lpattern text ltext l k
+
         (* lots of backtracking. O(m*(n-1)) AKA terrible *)
+        (* l, j, and k are all iterators, keeping track of the last known position. *)
 
 
-
+(* checks if pattern length is valid. *)
 let prelim_check pattern pattern_len text text_len = 
         if (pattern_len > text_len) || (pattern_len <1) || (text_len < 1) then
                 Interrupted 0
         else
                 search pattern pattern_len text text_len 0 0
 
-let check_if_file_or_text s1 s2 =
-        () (*TODO: add functionality for text files as well. returns type File if file. *)
+let check_if_file s1 s2 =
+        () (*TODO: add functionality for text files as well. returns 1 if file, 0 if string. *)
 
 
 let () = 
