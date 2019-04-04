@@ -29,6 +29,7 @@ let rec search pattern lpattern text ltext table j k =
 
 (*pre-processing the table *)
 let init pattern m = 
+        (*TODO : change Array to a different type of handling. Maybe a list? Make a list of all zeros and use an iterator? *)
         let table = Array.make m 0 in
         for j = 2 to m-1 do
                 table.(j) <- assertInterrupted (
