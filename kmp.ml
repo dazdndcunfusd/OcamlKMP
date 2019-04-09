@@ -1,3 +1,44 @@
+open Lazy
+type pattern = { is_match : bool; step : char -> pattern}
+
+let is_match = function
+        |{is_match = true; step = _} -> true
+        | _ -> false
+
+let mk b f = {is_match = b; step = f}
+let step c p = p.step c
+let rec const b = {is_match = b; step = fun _ -> const b}
+let rec to_list_ch = function
+        |""-> []
+        | ch -> (String.get ch 0 ) :: (to_list_ch ( String.sub ch 1 ( (String.length ch) -1 )))
+
+let run ( pattern: pattern) (text : string) : int list =
+        let accum ( pattern, ix, acc) c =
+                let pattern = step c pattern in (*TODO: change step to next if issues *)
+                let acc = if is_match pattern then (ix :: acc) else acc in
+                (pattern, ix+1, acc)
+        in
+        let (_,_,acc) = List.fold_left accum (pattern, 0, []) (to_list_ch text) in 
+        List.rev acc
+
+let generate_pattern (cs: char list) : pattern =
+        let rec pattern = lazy (gen pattern cs)
+        and gen curr_pattern = function
+                | [] -> const true
+                | [c] -> mk false @@ fun x ->
+                                let next_pattern = force curr_pattern in
+                                if x = c then mk true (fun _ ->  next_pattern) (*TODO: fix this*)
+                                else next_pattern
+                |c :: cs ->
+                                let next_pattern = lazy (step c @@ force curr_pattern) in
+                                let cont_pattern = lazy (gen next_pattern cs) in
+                                mk false @@ fun x -> force @@ if x = c then cont_pattern 
+                                                              else curr_pattern
+        in
+        force pattern
+
+let search cs = run @@ generate_pattern cs
+
 type result = (* types help handling whether success or failure *)
   | Found of int       (* the offset k where a match lies *)
   | Interrupted of int (* the state j that was reached *)
@@ -40,8 +81,9 @@ let init pattern m =
 
      
 
-let check_if_file s1 s2 =
-        () (*TODO: add functionality for text files as well. returns 1 if file, 0 if string. *)
+let check_if_file s1=
+        let is_txt file = Filename.check_suffix file ".txt" in
+        if (is_txt s1) then true else false
 
 
 let () = 
@@ -51,7 +93,7 @@ let () =
         let text = List.nth args_list 1 in
         let pattern_len = String.length pattern in
         let text_len = String.length text in
-        (* currently only accepts pure string arguments, not text files *)
+        (* TODO: Write conditional if either s1 or s2 is a file, read into string for search *)
         let table = init pattern pattern_len in
         let result = search pattern pattern_len text text_len table 0 0 in
-        print_result result
+        print_result result;
