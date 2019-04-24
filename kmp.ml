@@ -78,8 +78,6 @@ let () =
         else if (List.length int_ls) = 1 then print_string "Pattern found at character "
         else print_string "No patterns found."
         ;
-        print_string ("\n"^pattern^"\n");
-        print_string (text^"\n");
         print_ls int_ls;;
 
 (*Where I can improve:
