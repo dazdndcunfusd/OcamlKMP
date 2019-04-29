@@ -31,7 +31,7 @@ let generate_pattern (cs: char list) : pattern =
                 | [] -> const true
                 | [c] -> mk false @@ fun x ->
                                 let next_pattern = force curr_pattern in
-                                if x = c then mk true (fun _ ->next_pattern)
+                                if x = c then mk true (fun _ ->force curr_pattern)
                                 else next_pattern
                 |c :: cs ->
                                 let next_pattern = lazy (next c @@ force curr_pattern) in
