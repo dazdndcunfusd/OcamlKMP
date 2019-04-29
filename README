@@ -1,0 +1,10 @@
+/*********OCAML KMP **************/
+
+To compile:
+
+"ocamlopt -o [target] kmp.ml" in terminal, or type in "make".
+
+
+Description:
+
+The Knuth-Morris-Pratt (KMP) algorithm is able to search for a single or multiple occurrence of a string within a larger volume of text in O(n) time. Being able to find the string in O(n) makes it a perfect algorithm. This project aims to recreate the same computational power but in a completely functional way.

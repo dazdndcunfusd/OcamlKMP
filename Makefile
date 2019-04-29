@@ -1,12 +1,12 @@
 #simple Makefile for Ocaml KMP
 
-SRCS := Kmp.ml
+SRCS := kmp.ml
 EXEC :=OKmp
 CXX  :=/usr/bin/ocamlopt
 CXXFLAGS +=
 
 $(EXEC): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o _build/$@ $(SRCS)
+	$(CXX) $(CXXFLAGS) -o $@ $(SRCS)
 
 cleanall: clean
 	$(RM) $(EXEC)
