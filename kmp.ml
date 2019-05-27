@@ -14,7 +14,8 @@ let rec const b = {is_match = b; step = fun _ -> const b}
 let rec to_list_ch = function
         |""-> []
         | ch -> (String.get ch 0 ) :: (to_list_ch ( String.sub ch 1 ( (String.length ch) -1 )))
-
+        
+(* Provided and consulted by Joel Bjornson : http://jobjo.github.io/2015/07/27/Lazy-KMP-OCaml.html *)
 (*checks against pattern *)
 let run ( pattern: pattern) (text : string) (ln_pattern : int) : int list =
         let accum ( pattern, ix, acc) c =
@@ -24,7 +25,8 @@ let run ( pattern: pattern) (text : string) (ln_pattern : int) : int list =
         in
         let (_,_,acc) = List.fold_left accum (pattern, 0, []) (to_list_ch text) in 
         List.rev acc
-
+        
+(* Provided and consulted by Joel Bjornson : http://jobjo.github.io/2015/07/27/Lazy-KMP-OCaml.html *)
 let generate_pattern (cs: char list) : pattern = 
         let rec pattern = lazy (gen pattern cs)
         and gen curr_pattern = function
